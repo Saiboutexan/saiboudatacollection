@@ -1,0 +1,77 @@
+{
+  "_id": "dakar_auto_brut",
+  "startUrl": ["https://www.gaaraas.com/fr/users/dakar-auto?page=[1-13]"],
+  "selectors": [
+    {
+      "id": "annonce",
+      "type": "SelectorElement",
+      "parentSelectors": ["_root"],
+      "selector": "div.ad-specification",
+      "multiple": true,
+      "delay": 2000
+    },
+    {
+      "id": "titre_annonce",
+      "type": "SelectorText",
+      "parentSelectors": ["annonce"],
+      "selector": "h4",
+      "multiple": false,
+      "regex": "",
+      "delay": 0
+    },
+    {
+      "id": "region",
+      "type": "SelectorText",
+      "parentSelectors": ["annonce"],
+      "selector": "div.location",
+      "multiple": false,
+      "regex": "",
+      "delay": 0
+    },
+    {
+      "id": "prix",
+      "type": "SelectorText",
+      "parentSelectors": ["annonce"],
+      "selector": ".ad-vehicle-price .price",
+      "multiple": false,
+      "regex": "",
+      "delay": 0
+    },
+    {
+      "id": "kilometrage",
+      "type": "SelectorText",
+      "parentSelectors": ["annonce"],
+      "selector": ".ad-vehicle-mileage .value",
+      "multiple": false,
+      "regex": "",
+      "delay": 0
+    },
+    {
+      "id": "boite_vitesses",
+      "type": "SelectorText",
+      "parentSelectors": ["annonce"],
+      "selector": ".transmission span",
+      "multiple": false,
+      "regex": "",
+      "delay": 0
+    },
+    {
+      "id": "carburant",
+      "type": "SelectorText",
+      "parentSelectors": ["annonce"],
+      "selector": ".engine-capacity",
+      "multiple": false,
+      "regex": "",
+      "delay": 0
+    },
+    {
+      "id": "date_publication",
+      "type": "SelectorText",
+      "parentSelectors": ["annonce"],
+      "selector": ".ad-post-date span",
+      "multiple": false,
+      "regex": "",
+      "delay": 0
+    }
+  ]
+}

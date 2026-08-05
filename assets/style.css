@@ -1,0 +1,83 @@
+/* Habillage de l'application ------------------------------------------- */
+
+.stApp {
+    background:
+        radial-gradient(1200px 600px at 15% -10%, #0f766e 0%, transparent 60%),
+        radial-gradient(900px 500px at 110% 10%, #115e59 0%, transparent 55%),
+        linear-gradient(160deg, #042f2e 0%, #064e4a 55%, #0b7c74 100%);
+    background-attachment: fixed;
+    color: #f0fdfa;
+}
+
+/* Barre latérale */
+section[data-testid="stSidebar"] {
+    background: rgba(4, 47, 46, 0.92);
+    border-right: 1px solid rgba(153, 246, 228, 0.18);
+}
+section[data-testid="stSidebar"] * { color: #ccfbf1; }
+
+/* Titres */
+.titre-app {
+    text-align: center;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(2.2rem, 5vw, 3.6rem);
+    letter-spacing: 0.06em;
+    margin: 0.2rem 0 0.6rem;
+    color: #f0fdfa;
+    text-shadow: 0 2px 18px rgba(0, 0, 0, 0.35);
+}
+.titre-section {
+    text-align: center;
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 2rem;
+    margin-bottom: 0.4rem;
+}
+.sous-titre {
+    max-width: 62rem;
+    margin: 0 auto 1rem;
+    text-align: center;
+    font-size: 1.02rem;
+    line-height: 1.6;
+    color: #d5f5f0;
+}
+
+h1, h2, h3, h4, p, li, label, .stMarkdown { color: #eafaf7; }
+
+/* Boutons */
+.stButton > button,
+.stDownloadButton > button,
+.stLinkButton > a {
+    background: rgba(255, 255, 255, 0.10);
+    border: 1px solid rgba(153, 246, 228, 0.45);
+    color: #f0fdfa;
+    border-radius: 10px;
+    padding: 0.6rem 1rem;
+    font-weight: 600;
+    transition: background 0.15s ease, transform 0.15s ease;
+}
+.stButton > button:hover,
+.stDownloadButton > button:hover,
+.stLinkButton > a:hover {
+    background: rgba(153, 246, 228, 0.22);
+    border-color: #99f6e4;
+    transform: translateY(-1px);
+}
+
+/* Indicateurs et tableaux */
+div[data-testid="stMetric"] {
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(153, 246, 228, 0.22);
+    border-radius: 12px;
+    padding: 0.8rem 1rem;
+}
+div[data-testid="stDataFrame"] {
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+/* Onglets */
+button[data-baseweb="tab"] { color: #d5f5f0; }
+button[data-baseweb="tab"][aria-selected="true"] {
+    color: #ffffff;
+    border-bottom-color: #99f6e4;
+}

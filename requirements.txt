@@ -1,0 +1,5 @@
+streamlit>=1.36
+selenium>=4.20
+pandas>=2.1
+matplotlib>=3.8
+seaborn>=0.13

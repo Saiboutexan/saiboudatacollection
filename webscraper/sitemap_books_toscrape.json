@@ -1,0 +1,85 @@
+{
+  "_id": "books_toscrape_brut",
+  "startUrl": ["https://books.toscrape.com/catalogue/page-[1-50].html"],
+  "selectors": [
+    {
+      "id": "livre",
+      "type": "SelectorElement",
+      "parentSelectors": ["_root"],
+      "selector": "article.product_pod",
+      "multiple": true,
+      "delay": 0
+    },
+    {
+      "id": "titre",
+      "type": "SelectorText",
+      "parentSelectors": ["livre"],
+      "selector": "h3 a",
+      "multiple": false,
+      "regex": "",
+      "delay": 0
+    },
+    {
+      "id": "prix",
+      "type": "SelectorText",
+      "parentSelectors": ["livre"],
+      "selector": "p.price_color",
+      "multiple": false,
+      "regex": "",
+      "delay": 0
+    },
+    {
+      "id": "disponibilite",
+      "type": "SelectorText",
+      "parentSelectors": ["livre"],
+      "selector": "p.instock.availability",
+      "multiple": false,
+      "regex": "",
+      "delay": 0
+    },
+    {
+      "id": "note",
+      "type": "SelectorElementAttribute",
+      "parentSelectors": ["livre"],
+      "selector": "p.star-rating",
+      "extractAttribute": "class",
+      "multiple": false,
+      "delay": 0
+    },
+    {
+      "id": "fiche",
+      "type": "SelectorLink",
+      "parentSelectors": ["livre"],
+      "selector": "h3 a",
+      "multiple": false,
+      "delay": 0
+    },
+    {
+      "id": "description",
+      "type": "SelectorText",
+      "parentSelectors": ["fiche"],
+      "selector": "#product_description + p",
+      "multiple": false,
+      "regex": "",
+      "delay": 0
+    },
+    {
+      "id": "type_produit",
+      "type": "SelectorText",
+      "parentSelectors": ["fiche"],
+      "selector": "ul.breadcrumb li:nth-of-type(3) a",
+      "multiple": false,
+      "regex": "",
+      "delay": 0
+    },
+    {
+      "id": "tableau_produit",
+      "type": "SelectorText",
+      "parentSelectors": ["fiche"],
+      "selector": "table.table-striped tr td",
+      "multiple": true,
+      "regex": "",
+      "delay": 0
+    }
+  ]
+}

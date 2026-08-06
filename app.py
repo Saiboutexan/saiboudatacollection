@@ -7,6 +7,7 @@ Quatre fonctions, pilotées depuis la barre latérale :
     4. accéder aux deux formulaires d'évaluation (Kobo et Google Forms).
 """
 
+import base64
 from pathlib import Path
 
 import pandas as pd
@@ -47,11 +48,44 @@ st.set_page_config(
 )
 
 
+def _image_de_fond() -> Path | None:
+    """Retourne la première image de fond trouvée dans `assets/`."""
+    for extension in ("png", "jpg", "jpeg", "webp"):
+        chemin = RACINE / "assets" / f"dit_banner.{extension}"
+        if chemin.exists():
+            return chemin
+    return None
+
+
 def charger_style() -> None:
     feuille = RACINE / "assets" / "style.css"
     if feuille.exists():
         st.markdown(f"<style>{feuille.read_text(encoding='utf-8')}</style>",
                     unsafe_allow_html=True)
+
+    # L'image est encodée en base64 et injectée dans la feuille de style :
+    # Streamlit ne sert pas les fichiers statiques du projet par défaut.
+    # Le voile sombre par-dessus garde le texte lisible.
+    fond = _image_de_fond()
+    if fond is None:
+        return
+
+    mime = "jpeg" if fond.suffix.lower() in (".jpg", ".jpeg") else fond.suffix.lstrip(".")
+    encodee = base64.b64encode(fond.read_bytes()).decode()
+    st.markdown(
+        f"""<style>
+        .stApp {{
+            background-image:
+                linear-gradient(rgba(4, 47, 46, 0.88), rgba(4, 47, 46, 0.94)),
+                url("data:image/{mime};base64,{encodee}");
+            background-size: cover;
+            background-position: center top;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }}
+        </style>""",
+        unsafe_allow_html=True,
+    )
 
 
 # ---------------------------------------------------------------- en-tête

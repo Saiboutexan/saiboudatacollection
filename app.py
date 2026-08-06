@@ -48,13 +48,21 @@ st.set_page_config(
 )
 
 
+EXTENSIONS_IMAGE = (".png", ".jpg", ".jpeg", ".webp")
+
+
 def _image_de_fond() -> Path | None:
-    """Retourne la première image de fond trouvée dans `assets/`."""
-    for extension in ("png", "jpg", "jpeg", "webp"):
-        chemin = RACINE / "assets" / f"dit_banner.{extension}"
-        if chemin.exists():
-            return chemin
-    return None
+    """Retourne l'image de fond déposée dans `assets/`.
+
+    Toute image dont le nom commence par « dit » convient : `dit.jpeg`,
+    `dit_banner.png`, etc.
+    """
+    dossier = RACINE / "assets"
+    candidates = sorted(
+        chemin for chemin in dossier.glob("dit*")
+        if chemin.suffix.lower() in EXTENSIONS_IMAGE
+    )
+    return candidates[0] if candidates else None
 
 
 def charger_style() -> None:

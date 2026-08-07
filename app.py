@@ -1,11 +1,4 @@
-"""Application Streamlit — collecte, nettoyage et visualisation de données.
-
-Quatre fonctions, pilotées depuis la barre latérale :
-    1. scraper des données sur plusieurs pages (Selenium) ;
-    2. télécharger les données brutes du scraping no-code (Web Scraper) ;
-    3. visualiser le tableau de bord des données nettoyées ;
-    4. accéder aux deux formulaires d'évaluation (Kobo et Google Forms).
-"""
+"""Application Streamlit : scraping, nettoyage, base SQL et tableau de bord."""
 
 import base64
 from pathlib import Path
@@ -17,8 +10,6 @@ from scrapers import scraper_livres, scraper_vehicules
 from utils import database as bd
 from utils import viz
 from utils.cleaning import nettoyer_livres, nettoyer_vehicules
-
-# ---------------------------------------------------------------- constantes
 
 RACINE = Path(__file__).resolve().parent
 DOSSIER_BRUT = RACINE / "data" / "raw"
@@ -52,11 +43,6 @@ EXTENSIONS_IMAGE = (".png", ".jpg", ".jpeg", ".webp")
 
 
 def _image_de_fond() -> Path | None:
-    """Retourne l'image de fond déposée dans `assets/`.
-
-    Toute image dont le nom commence par « dit » convient : `dit.jpeg`,
-    `dit_banner.png`, etc.
-    """
     dossier = RACINE / "assets"
     candidates = sorted(
         chemin for chemin in dossier.glob("dit*")
@@ -71,9 +57,6 @@ def charger_style() -> None:
         st.markdown(f"<style>{feuille.read_text(encoding='utf-8')}</style>",
                     unsafe_allow_html=True)
 
-    # L'image est encodée en base64 et injectée dans la feuille de style :
-    # Streamlit ne sert pas les fichiers statiques du projet par défaut.
-    # Le voile sombre par-dessus garde le texte lisible.
     fond = _image_de_fond()
     if fond is None:
         return
@@ -96,8 +79,6 @@ def charger_style() -> None:
     )
 
 
-# ---------------------------------------------------------------- en-tête
-
 def afficher_entete() -> None:
     st.markdown("<h1 class='titre-app'>COLLECTE DE DONNÉES</h1>",
                 unsafe_allow_html=True)
@@ -116,8 +97,6 @@ def afficher_entete() -> None:
     )
     st.divider()
 
-
-# ---------------------------------------------------------------- utilitaires
 
 def bouton_telechargement(df: pd.DataFrame, nom_fichier: str, libelle: str,
                           cle: str) -> None:
@@ -146,8 +125,6 @@ def sauvegarder_csv(df: pd.DataFrame, nom: str) -> Path:
     df.to_csv(chemin, index=False, encoding="utf-8-sig")
     return chemin
 
-
-# ---------------------------------------------------------------- option 1
 
 def page_scraping(n_pages: int) -> None:
     st.header("Collecte des données avec Selenium")
@@ -220,8 +197,6 @@ def page_scraping(n_pages: int) -> None:
                                   "Télécharger ces données en CSV", f"dl_{cle}")
 
 
-# ---------------------------------------------------------------- option 2
-
 def page_donnees_brutes() -> None:
     st.header("Données brutes — scraping no-code (Web Scraper)")
     st.caption(
@@ -267,10 +242,7 @@ def page_donnees_brutes() -> None:
         st.divider()
 
 
-# ---------------------------------------------------------------- option 3
-
 def _donnees_dashboard(table: str, cle_session: str, fichier: str) -> pd.DataFrame:
-    """Priorité à la base SQL ; à défaut, au dernier CSV nettoyé."""
     if bd.compter(table) > 0:
         return bd.lire_table(table)
     chemin = DOSSIER_PROPRE / fichier
@@ -369,8 +341,6 @@ def page_dashboard() -> None:
             st.dataframe(journal, use_container_width=True)
 
 
-# ---------------------------------------------------------------- option 4
-
 def page_evaluation() -> None:
     st.markdown("<h2 class='titre-section'>Donnez votre avis</h2>",
                 unsafe_allow_html=True)
@@ -392,8 +362,6 @@ def page_evaluation() -> None:
         st.components.v1.iframe(FORMULAIRE_GOOGLE + "?embedded=true",
                                 height=800, scrolling=True)
 
-
-# ---------------------------------------------------------------- point d'entrée
 
 def main() -> None:
     charger_style()

@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 
-matplotlib.use("Agg")  # rendu hors écran : obligatoire côté serveur Streamlit
+matplotlib.use("Agg")
 sns.set_theme(style="whitegrid", palette="crest")
 
 TAILLE = (7, 4)
@@ -17,11 +17,8 @@ def _figure():
 
 
 def _numerique(serie: pd.Series) -> pd.Series:
-    """Convertit une colonne Int64/objet en float et retire les valeurs nulles."""
     return pd.to_numeric(serie, errors="coerce").dropna().astype(float)
 
-
-# ---------------------------------------------------------------- livres
 
 def livres_distribution_prix(df: pd.DataFrame):
     fig, ax = _figure()
@@ -69,8 +66,6 @@ def livres_prix_par_note(df: pd.DataFrame):
     fig.tight_layout()
     return fig
 
-
-# ---------------------------------------------------------------- véhicules
 
 def vehicules_top_marques(df: pd.DataFrame, n: int = 10):
     fig, ax = _figure()
@@ -128,7 +123,7 @@ def vehicules_boite_vitesses(df: pd.DataFrame):
 def vehicules_kilometrage(df: pd.DataFrame):
     fig, ax = _figure()
     km = _numerique(df["kilometrage"])
-    km = km[km.between(0, 600_000)]  # bornes : au-delà, saisie aberrante
+    km = km[km.between(0, 600_000)]
     sns.histplot(km, bins=30, kde=True, ax=ax)
     ax.set_title("Distribution du kilométrage")
     ax.set_xlabel("Kilométrage (km)")

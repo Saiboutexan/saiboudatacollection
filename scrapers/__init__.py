@@ -1,4 +1,4 @@
-"""Scrapers Selenium du projet (aucun usage de BeautifulSoup)."""
+"""Scrapers Selenium du projet."""
 
 from .books_scraper import scraper_livres
 from .gaaraas_scraper import scraper_vehicules

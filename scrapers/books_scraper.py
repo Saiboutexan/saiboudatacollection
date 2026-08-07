@@ -1,14 +1,4 @@
-"""Scraping de books.toscrape.com avec Selenium uniquement.
-
-Variables extraites (cf. énoncé) :
-    V1 titre · V2 prix · V3 disponibilité · V4 nombre de produits sur la page
-    V5 note · V6 nombre de reviews · V7 description · V8 type de produit
-    V9 tax
-
-Les variables V6 à V9 ne figurent pas sur la page de catalogue : il faut
-ouvrir la fiche de chaque livre. C'est le rôle du second passage
-(`_completer_fiches`).
-"""
+"""Scraping de books.toscrape.com avec Selenium."""
 
 import time
 
@@ -22,7 +12,6 @@ from .driver import attribut_ou_defaut, creer_driver, texte_ou_defaut
 
 URL_CATALOGUE = "https://books.toscrape.com/catalogue/page-{}.html"
 
-# Le nombre d'étoiles est porté par une classe CSS ("star-rating Three").
 NOTES = {"One": 1, "Two": 2, "Three": 3, "Four": 4, "Five": 5}
 
 COLONNES = [
@@ -40,7 +29,6 @@ def _note_depuis_classe(classe_css: str) -> str:
 
 
 def _scraper_catalogue(driver, n_pages, journal=None):
-    """Premier passage : parcourt les pages de listing (V1 à V5)."""
     livres = []
 
     for page in range(1, n_pages + 1):
@@ -54,7 +42,7 @@ def _scraper_catalogue(driver, n_pages, journal=None):
                     (By.CSS_SELECTOR, "article.product_pod"))
             )
         except Exception:
-            break  # page inexistante : on s'arrête là
+            break
 
         fiches = driver.find_elements(By.CSS_SELECTOR, "article.product_pod")
         nb_produits_page = len(fiches)
@@ -82,7 +70,7 @@ def _scraper_catalogue(driver, n_pages, journal=None):
 
 
 def _completer_fiches(driver, livres, journal=None):
-    """Second passage : ouvre chaque fiche produit (V6 à V9)."""
+    """Ouvre la fiche de chaque livre : reviews, tax, catégorie, description."""
     total = len(livres)
 
     for i, livre in enumerate(livres, start=1):
@@ -100,8 +88,6 @@ def _completer_fiches(driver, livres, journal=None):
         except Exception:
             continue
 
-        # Le tableau produit : UPC, Product Type, Prix HT/TTC, Tax,
-        # Availability, Number of reviews.
         infos = {}
         for ligne in driver.find_elements(By.CSS_SELECTOR, "table.table-striped tr"):
             cle = texte_ou_defaut(ligne, By.TAG_NAME, "th")
@@ -124,11 +110,6 @@ def _completer_fiches(driver, livres, journal=None):
 
 
 def scraper_livres(n_pages=1, avec_fiches=True, journal=None) -> pd.DataFrame:
-    """Scrape `n_pages` pages du catalogue et renvoie un DataFrame brut.
-
-    `journal` est une fonction (courant, total, nb_lignes) appelée pour
-    alimenter la barre de progression Streamlit.
-    """
     driver = creer_driver()
     debut = time.time()
     try:

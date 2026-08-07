@@ -1,4 +1,4 @@
-"""Base SQL (SQLite) de l'application : une table par source de données."""
+"""Base SQLite : une table par source de données."""
 
 import sqlite3
 from pathlib import Path
@@ -60,7 +60,6 @@ CREATE INDEX IF NOT EXISTS idx_vehicules_marque ON {TABLE_VEHICULES}(marque);
 
 
 def connexion() -> sqlite3.Connection:
-    """Ouvre la base (et la crée au premier appel)."""
     CHEMIN_BD.parent.mkdir(parents=True, exist_ok=True)
     conn = sqlite3.connect(CHEMIN_BD, check_same_thread=False)
     conn.executescript(SCHEMA)
@@ -68,11 +67,6 @@ def connexion() -> sqlite3.Connection:
 
 
 def enregistrer(df: pd.DataFrame, table: str, remplacer: bool = True) -> int:
-    """Écrit un DataFrame nettoyé dans la table indiquée.
-
-    `remplacer=True` vide la table avant insertion : c'est le comportement
-    voulu quand on relance un scraping complet. `False` ajoute les lignes.
-    """
     if df.empty:
         return 0
 
@@ -93,7 +87,6 @@ def enregistrer(df: pd.DataFrame, table: str, remplacer: bool = True) -> int:
 
 
 def journaliser(source: str, nb_pages: int, nb_lignes: int, duree_s: float) -> None:
-    """Trace chaque exécution de scraping dans la table de journal."""
     conn = connexion()
     try:
         conn.execute(
@@ -107,7 +100,6 @@ def journaliser(source: str, nb_pages: int, nb_lignes: int, duree_s: float) -> N
 
 
 def lire_table(table: str, limite: int | None = None) -> pd.DataFrame:
-    """Relit une table complète sous forme de DataFrame."""
     conn = connexion()
     try:
         requete = f"SELECT * FROM {table}"
@@ -119,7 +111,6 @@ def lire_table(table: str, limite: int | None = None) -> pd.DataFrame:
 
 
 def compter(table: str) -> int:
-    """Nombre de lignes stockées dans une table."""
     conn = connexion()
     try:
         return conn.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
@@ -128,7 +119,6 @@ def compter(table: str) -> int:
 
 
 def journal_recent(limite: int = 10) -> pd.DataFrame:
-    """Dernières exécutions de scraping, les plus récentes en premier."""
     conn = connexion()
     try:
         return pd.read_sql_query(

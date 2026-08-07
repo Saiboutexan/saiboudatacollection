@@ -1,10 +1,8 @@
-"""Nettoyage des données brutes issues des scrapers Selenium."""
+"""Nettoyage des données brutes issues des scrapers."""
 
 import re
 
 import pandas as pd
-
-# ---------------------------------------------------------------- livres
 
 NOTES_TEXTE = {"One": 1, "Two": 2, "Three": 3, "Four": 4, "Five": 5}
 
@@ -21,13 +19,12 @@ def _vers_float(valeur) -> float:
 
 
 def _vers_int(valeur) -> float:
-    """'136 000 km' -> 136000 ; 'CFA 2 800 000' -> 2800000."""
+    """'136 000 km' -> 136000."""
     chiffres = re.sub(r"[^\d]", "", str(valeur or ""))
     return int(chiffres) if chiffres else float("nan")
 
 
 def nettoyer_livres(df: pd.DataFrame) -> pd.DataFrame:
-    """Type les colonnes, normalise la disponibilité et la note."""
     if df.empty:
         return df.copy()
 
@@ -37,7 +34,6 @@ def nettoyer_livres(df: pd.DataFrame) -> pd.DataFrame:
     propre["prix"] = propre["prix"].apply(_vers_float)
     propre["tax"] = propre["tax"].apply(_vers_float)
 
-    # 'In stock' / 'In stock (22 available)' -> booléen + quantité
     dispo = propre["disponibilite"].astype(str).str.strip()
     propre["en_stock"] = dispo.str.lower().str.contains("in stock")
     propre["disponibilite"] = propre["en_stock"].map(
@@ -58,10 +54,6 @@ def nettoyer_livres(df: pd.DataFrame) -> pd.DataFrame:
     return propre.reset_index(drop=True)
 
 
-# ---------------------------------------------------------------- véhicules
-
-# Marques en deux mots : sans cette liste, « Land Rover Range Rover Sport »
-# donnerait marque='Land' et modèle='Rover Range Rover Sport'.
 MARQUES_COMPOSEES = [
     "Land Rover", "Alfa Romeo", "Aston Martin", "Great Wall",
     "Mercedes Benz", "Mercedes-Benz", "Range Rover", "Rolls Royce",
@@ -104,7 +96,6 @@ def _extraire_carburant(texte: str):
 
 
 def nettoyer_vehicules(df: pd.DataFrame) -> pd.DataFrame:
-    """Éclate le titre en marque/modèle/année et type les colonnes."""
     if df.empty:
         return df.copy()
 
@@ -126,7 +117,6 @@ def nettoyer_vehicules(df: pd.DataFrame) -> pd.DataFrame:
     propre["region"] = (
         propre["region"].astype(str).str.strip().replace({"": None, "nan": None}))
 
-    # Une année de 1980 ou un prix à 0 sont des saisies aberrantes du site.
     annee_valide = propre["annee"].between(1950, 2030) | propre["annee"].isna()
     propre = propre[annee_valide]
     propre.loc[propre["prix"] == 0, "prix"] = pd.NA
